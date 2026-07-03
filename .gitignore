@@ -1,0 +1,20 @@
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+
+# Bases de datos locales
+*.db
+*.sqlite3
+database/becatrack.db
+
+# VS Code
+.vscode/
+
+# Reportes generados (opcional, para no llenar el repo con PDFs de prueba)
+reports/*.pdf
