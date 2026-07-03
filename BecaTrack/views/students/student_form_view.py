@@ -2,66 +2,113 @@ import customtkinter as ctk
 from config import COLOR_PALETTE
 
 class StudentFormView(ctk.CTkFrame):
-    """Formulario para agregar o editar estudiantes (CRUD - Create/Update)"""
+    """Formulario para agregar estudiantes (estilo web moderno en 2 columnas)."""
     def __init__(self, parent, controller):
         super().__init__(parent, fg_color="transparent")
         self.controller = controller
         self._setup_ui()
         
     def _setup_ui(self):
-        # Contenedor central (tarjeta)
-        self.card = ctk.CTkScrollableFrame(self, fg_color=COLOR_PALETTE["dark_gray"], corner_radius=10, width=500)
-        self.card.pack(pady=20, padx=20, fill="both", expand=True)
+        # Card principal blanca
+        self.card = ctk.CTkFrame(self, fg_color=COLOR_PALETTE["bg_card"], corner_radius=15, border_width=1, border_color=COLOR_PALETTE["border"])
+        self.card.pack(pady=15, padx=20, fill="both", expand=True)
         
-        self.title_lbl = ctk.CTkLabel(self.card, text="Registrar Estudiante", font=ctk.CTkFont(size=20, weight="bold"))
-        self.title_lbl.pack(pady=20)
+        # Header de la card
+        self.header_frame = ctk.CTkFrame(self.card, fg_color="transparent")
+        self.header_frame.pack(fill="x", padx=30, pady=(15, 10))
+        
+        self.title_lbl = ctk.CTkLabel(
+            self.header_frame, text="Registrar Nuevo Estudiante", 
+            font=ctk.CTkFont(family="Inter", size=20, weight="bold"), 
+            text_color=COLOR_PALETTE["text_primary"]
+        )
+        self.title_lbl.pack(side="left")
+        
+        self.back_btn = ctk.CTkButton(
+            self.header_frame, text="Volver al listado", 
+            fg_color="transparent", text_color=COLOR_PALETTE["text_secondary"], 
+            hover_color=COLOR_PALETTE["bg_app"], 
+            command=self.controller.show_list
+        )
+        self.back_btn.pack(side="right")
+        
+        # Separador
+        self.separator = ctk.CTkFrame(self.card, height=1, fg_color=COLOR_PALETTE["border"])
+        self.separator.pack(fill="x", padx=30, pady=(0, 10))
+        
+        # Form Container (Grid 2 columnas)
+        self.form_container = ctk.CTkFrame(self.card, fg_color="transparent")
+        self.form_container.pack(fill="both", expand=True, padx=30)
+        self.form_container.grid_columnconfigure((0, 1), weight=1)
         
         self.fields = {}
-        fields_info = [
-            ("Código", "student_code"),
-            ("Nombre", "first_name"),
-            ("Apellido", "last_name"),
-            ("Email", "email"),
-            ("Teléfono", "phone"),
-            ("Universidad", "university"),
-            ("Carrera", "career"),
-            ("Semestre (Ej. 1,2,3)", "current_semester")
-        ]
         
-        for label_text, key in fields_info:
-            frame = ctk.CTkFrame(self.card, fg_color="transparent")
-            frame.pack(fill="x", padx=40, pady=10)
-            
-            lbl = ctk.CTkLabel(frame, text=label_text, width=150, anchor="w")
-            lbl.pack(side="left")
-            
-            entry = ctk.CTkEntry(frame, width=300)
-            entry.pack(side="right", fill="x", expand=True)
-            self.fields[key] = entry
-            
-        # Botones
-        self.btn_frame = ctk.CTkFrame(self.card, fg_color="transparent")
-        self.btn_frame.pack(pady=30)
+        # Fila 0
+        self._create_input(0, 0, "Código", "Ej. 00892", "student_code")
+        self._create_input(0, 1, "Semestre / Año", "Ej. 1, 2, 3 o 3er Año", "current_semester")
         
-        self.cancel_btn = ctk.CTkButton(
-            self.btn_frame, text="Cancelar", fg_color=COLOR_PALETTE["red"], hover_color="#B91C1C", command=self.controller.show_list
-        )
-        self.cancel_btn.pack(side="left", padx=10)
+        # Fila 1
+        self._create_input(1, 0, "Nombre", "", "first_name")
+        self._create_input(1, 1, "Apellido", "", "last_name")
+        
+        # Fila 2
+        self._create_input(2, 0, "Email", "", "email")
+        self._create_input(2, 1, "Teléfono", "", "phone")
+        
+        # Fila 3 y 4 (Ancho completo)
+        self._create_input(3, 0, "Universidad", "", "university", colspan=2)
+        self._create_input(4, 0, "Carrera", "", "career", colspan=2)
+        
+        # Footer con botones
+        self.footer = ctk.CTkFrame(self.card, fg_color="transparent")
+        self.footer.pack(fill="x", padx=40, pady=15)
+        
+        self.msg_lbl = ctk.CTkLabel(self.footer, text="", font=ctk.CTkFont(size=13, weight="bold"))
+        self.msg_lbl.pack(side="left")
         
         self.save_btn = ctk.CTkButton(
-            self.btn_frame, text="Guardar", fg_color=COLOR_PALETTE["blue"], hover_color="#1D4ED8", command=self.controller.save_student
+            self.footer, text="Guardar Estudiante", 
+            fg_color=COLOR_PALETTE["blue"], hover_color="#1D4ED8",
+            height=40, corner_radius=8, font=ctk.CTkFont(weight="bold"),
+            command=self.controller.save_student
         )
-        self.save_btn.pack(side="right", padx=10)
+        self.save_btn.pack(side="right")
         
-        self.msg_lbl = ctk.CTkLabel(self.card, text="", text_color=COLOR_PALETTE["green"])
-        self.msg_lbl.pack(pady=5)
+        self.cancel_btn = ctk.CTkButton(
+            self.footer, text="Cancelar", 
+            fg_color="transparent", text_color=COLOR_PALETTE["text_secondary"], 
+            border_width=1, border_color=COLOR_PALETTE["border"], hover_color=COLOR_PALETTE["bg_app"],
+            height=40, corner_radius=8, font=ctk.CTkFont(weight="bold"),
+            command=self.controller.show_list
+        )
+        self.cancel_btn.pack(side="right", padx=15)
         
+    def _create_input(self, row, col, label_text, placeholder, key, colspan=1):
+        frame = ctk.CTkFrame(self.form_container, fg_color="transparent")
+        frame.grid(row=row, column=col, columnspan=colspan, sticky="nsew", padx=10, pady=5)
+        
+        lbl = ctk.CTkLabel(frame, text=label_text, font=ctk.CTkFont(size=13, weight="bold"), text_color=COLOR_PALETTE["text_secondary"])
+        lbl.pack(anchor="w", pady=(0, 2))
+        
+        entry = ctk.CTkEntry(
+            frame, 
+            placeholder_text=placeholder, 
+            height=35, 
+            corner_radius=8,
+            fg_color=COLOR_PALETTE["bg_app"], 
+            border_color=COLOR_PALETTE["border"],
+            border_width=1,
+            text_color=COLOR_PALETTE["text_primary"]
+        )
+        entry.pack(fill="x", expand=True)
+        self.fields[key] = entry
+
     def get_data(self):
         data = {}
         for k, entry in self.fields.items():
             val = entry.get()
             if k == "current_semester":
-                val = int(val) if val.isdigit() else 1
+                val = int(val) if str(val).isdigit() else 1
             data[k] = val
         return data
         

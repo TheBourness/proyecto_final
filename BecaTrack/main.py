@@ -35,14 +35,14 @@ def main():
     seed_admin_user(auth_service, user_repo)
     
     # 3. Configurar CustomTkinter
-    ctk.set_appearance_mode("dark")
+    ctk.set_appearance_mode("light")
     ctk.set_default_color_theme("blue")
     
     # Inicializar la ventana principal
     app = ctk.CTk()
     app.title(APP_TITLE)
     app.geometry(APP_RESOLUTION)
-    app.configure(fg_color=COLOR_PALETTE["black"])
+    app.configure(fg_color=COLOR_PALETTE["bg_app"])
     
     # 4. Iniciar Arquitectura MVC cargando la Vista de Login
     login_view = LoginView(app)

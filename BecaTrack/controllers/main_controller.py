@@ -30,15 +30,15 @@ class MainController:
         
         # 2. Instanciar Módulo Estudiantes
         student_ctrl = StudentController(self.view.content_frame, self.student_service)
-        self.view.frames["Estudiantes"] = student_ctrl
+        self.view.frames["Directorio Becados"] = student_ctrl
         
         # 3. Instanciar Módulo Seguimientos
         tracking_ctrl = TrackingController(self.view.content_frame, self.tracking_repo, self.student_repo)
-        self.view.frames["Seguimientos"] = tracking_ctrl
+        self.view.frames["Control de Seguimientos"] = tracking_ctrl
         
         # Frames temporales para el resto
         import customtkinter as ctk
-        sections = ["Reportes", "Configuración"]
+        sections = ["Métricas y Reportes", "Configuración"]
         
         for sec in sections:
             frame = ctk.CTkFrame(self.view.content_frame, fg_color="transparent")

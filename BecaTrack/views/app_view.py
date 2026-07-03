@@ -24,7 +24,7 @@ class AppView(ctk.CTkFrame):
         self.sidebar.grid(row=0, column=0, sticky="nsew")
         
         # Contenedor derecho para Topbar y Contenido (Columna 1)
-        self.right_container = ctk.CTkFrame(self, fg_color="transparent", corner_radius=0)
+        self.right_container = ctk.CTkFrame(self, fg_color=COLOR_PALETTE["bg_app"], corner_radius=0)
         self.right_container.grid(row=0, column=1, sticky="nsew")
         
         self.right_container.grid_rowconfigure(1, weight=1)
@@ -35,7 +35,7 @@ class AppView(ctk.CTkFrame):
         self.topbar.grid(row=0, column=0, sticky="ew")
         
         # Main Content Frame (Fila 1 dentro del contenedor derecho)
-        self.content_frame = ctk.CTkFrame(self.right_container, fg_color=COLOR_PALETTE["black"], corner_radius=0)
+        self.content_frame = ctk.CTkFrame(self.right_container, fg_color=COLOR_PALETTE["bg_app"], corner_radius=0)
         self.content_frame.grid(row=1, column=0, sticky="nsew", padx=20, pady=20)
         
         # Diccionario para almacenar las vistas de cada sección
